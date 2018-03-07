@@ -1,0 +1,188 @@
+package batchfile;
+
+import java.awt.Dimension;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import java.awt.Toolkit;
+
+import javax.swing.JTextField;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.util.Stack;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class Batchfile extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTextField textField_1;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Batchfile frame = new Batchfile();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	 /**
+	 * Create the frame.
+	 */
+	public Batchfile() {
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int i=JOptionPane.showConfirmDialog(null, "确定要退出吗？", "退出", JOptionPane.YES_NO_OPTION);
+		        if(i==JOptionPane.YES_OPTION)
+		        	System.exit(0);
+			}
+		});
+		Toolkit tk = this.getToolkit();
+		int width=600;
+		int hight=500;
+		Dimension dimension=tk.getScreenSize();
+		setSize(711, 474);
+		setLocation((int)(dimension.getWidth()-width)/2, (int)(dimension.getHeight()-hight)/2);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("\u9009\u62E9\u6E90\u6587\u4EF6\uFF1A");
+		lblNewLabel.setBounds(38, 30, 127, 18);
+		lblNewLabel.setFont(new Font("宋体", Font.PLAIN, 18));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("\u9009\u62E9\u76EE\u6807\u6587\u4EF6\u5939\uFF1A");
+		lblNewLabel_1.setBounds(21, 75, 144, 18);
+		lblNewLabel_1.setFont(new Font("宋体", Font.PLAIN, 18));
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblNewLabel_2 = new JLabel("\u64CD\u4F5C\u8BB0\u5F55\uFF1A");
+		lblNewLabel_2.setBounds(67, 192, 98, 18);
+		lblNewLabel_2.setFont(new Font("宋体", Font.PLAIN, 18));
+		contentPane.add(lblNewLabel_2);
+		
+		textField = new JTextField();
+		textField.setBounds(179, 29, 345, 24);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(179, 75, 345, 24);
+		textField_1.setColumns(10);
+		contentPane.add(textField_1);
+		
+		Stack<String> startPath = new Stack<>();
+		Stack<String> endPath = new Stack<>();
+		
+		JButton btnNewButton = new JButton("\u6D4F\u89C8");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setMultiSelectionEnabled(true);
+				int i = fileChooser.showOpenDialog(getContentPane());
+				if(i==JFileChooser.APPROVE_OPTION){
+					File[] selectFiles = fileChooser.getSelectedFiles();
+					String allFilesName="";
+					for(int j=0;j<selectFiles.length;j++){
+						allFilesName+=selectFiles[j].getName();
+						allFilesName+=" ;";
+						startPath.add(selectFiles[j].getPath());
+					}
+					textField.setText(allFilesName);
+				}
+			}
+		});
+		
+		btnNewButton.setFont(new Font("宋体", Font.PLAIN, 16));
+		btnNewButton.setBounds(551, 28, 113, 27);
+		contentPane.add(btnNewButton);
+		
+		JButton button = new JButton("\u6D4F\u89C8");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int i = fileChooser.showOpenDialog(getContentPane());
+				if(i==JFileChooser.APPROVE_OPTION){
+					File selectFile = fileChooser.getSelectedFile();
+					endPath.add(selectFile.getPath());						//无法使用String类型来保存地址
+					textField_1.setText(fileChooser.getSelectedFile()+"");
+				}
+			}
+		});
+		button.setFont(new Font("宋体", Font.PLAIN, 16));
+		button.setBounds(551, 73, 113, 27);
+		contentPane.add(button);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(176, 142, 470, 194);
+		contentPane.add(scrollPane);
+		
+		JTextArea jTextArea = new JTextArea();
+		jTextArea.setColumns(50);
+		jTextArea.setRows(12);
+		scrollPane.setViewportView(jTextArea);
+		
+		JButton btnNewButton_1 = new JButton("\u79FB\u52A8");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					for(int i=0;i<=startPath.size();i++){
+						File afile = new File(startPath.pop());
+						if(afile.renameTo(new File(endPath.get(0)+"\\"+afile.getName()))){
+							jTextArea.append(afile.getName()+"\t"+"移动到"+"\t"+endPath.get(0)+"---完成\n");
+						}else {
+							jTextArea.append(afile.getName()+"\t"+"移动到"+"\t"+endPath.get(0)+"---失败\n");
+						}
+					}
+					endPath.pop();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		});
+		btnNewButton_1.setFont(new Font("宋体", Font.PLAIN, 16));
+		btnNewButton_1.setBounds(304, 361, 84, 27);
+		contentPane.add(btnNewButton_1);
+		
+		JButton button_1 = new JButton("\u5173\u95ED");
+		button_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.exit(0);
+			}
+		});
+		button_1.setFont(new Font("宋体", Font.PLAIN, 16));
+		button_1.setBounds(489, 361, 84, 27);
+		contentPane.add(button_1);
+	}
+}
